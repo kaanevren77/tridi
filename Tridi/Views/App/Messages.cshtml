@@ -1,0 +1,80 @@
+﻿<div class="container">
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">From</th>
+      <th scope="col">To</th>
+      <th scope="col">Message</th>
+    </tr>
+  </thead>
+  <tbody id="messagesTable">
+   
+  </tbody>
+</table>
+
+    <h3>Write Message</h3>
+    <div class="col-5">
+  <div class="mb-3 row">
+   <div class="mb-3">
+  <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
+  <textarea class="form-control" id="messageTextArea" rows="3"></textarea>
+</div>
+  </div>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-primary" onclick="SendMessages()" type="button">Send</button>
+  </div>
+</div>
+
+@section Scripts{
+<script>
+    
+$(document).ready(function () {
+    
+    GetMessages();
+});
+
+   function GetMessages() {
+       debugger;
+       var id = @ViewBag.Id;
+    $.ajax({
+        url: '/Messages/GetMessages',
+        type: 'GET',
+        data: {id : id},
+        contentType: 'application/x-www-form-urlencoded',
+        success: function (result) {
+            debugger;
+            $('#messagesTable').html(null);
+            if (result.data.length > 0) {
+                console.log(result);
+                debugger;
+                for (let i = 0; i < result.data.length; i++) {
+                    var html = '<tr><td>' + result.data[i].from.firstName + '</td><td>' +result.data[i].to.firstName + '</td><td>'+result.data[i].messageText+'</td></tr>';
+                    $('#messagesTable').append(html);
+                }
+            } 
+        },
+        error: function () { }
+    });
+
+
+ }
+
+function SendMessages() {
+     var id = @ViewBag.Id;
+     var text = $('#messageTextArea').val()
+    debugger;
+     $.ajax({
+        url: '/Messages/SendMessage',
+        type: 'POST',
+        data: {id : id, messageText : text},
+        contentType: 'application/x-www-form-urlencoded',
+        success: function (result) {
+            debugger;
+            window.location.reload()
+        },
+        error: function () { }
+    });
+}
+</script>
+}

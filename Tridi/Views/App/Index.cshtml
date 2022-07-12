@@ -1,0 +1,47 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Email</th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Messages</th>
+    </tr>
+  </thead>
+  <tbody id="userTableBody">
+    
+  </tbody>
+</table>
+
+@section Scripts{
+<script>
+    
+$(document).ready(function () {
+
+    GetUsers();
+});
+
+   function GetUsers() {
+    $.ajax({
+        url: '/User/GetUsers',
+        type: 'GET',
+        contentType: 'application/x-www-form-urlencoded',
+        success: function (result) {
+            debugger;
+            $('#userTableBody').html(null);
+            if (result.data.length > 0) {
+                for (let i = 0; i < result.data.length; i++) {
+                    var html = '<tr><th scope="row">'+(i + 1)+'</th><td>' + result.data[i].firstName + " " + result.data[i].lastName + '</td><td>' + result.data[i].email + '</td><td><a type="button" class="btn btn-primary btn-sm" href="/App/Messages?id=' + result.data[i].id + '" >See Messages</a></td></tr>';
+                    $('#userTableBody').append(html);
+                }
+            } 
+        },
+        error: function () { }
+    });
+ }
+
+</script>
+}
